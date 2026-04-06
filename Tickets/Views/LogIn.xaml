@@ -22,8 +22,8 @@
             <StackPanel>
                 <TextBlock Text="Вхід" TextAlignment="Center" FontSize="30" FontWeight="Bold" Margin="0 0 0 20" />
 
-                <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         materialDesign:HintAssist.Hint="Введіть логін" 
+                <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         materialDesign:HintAssist.Hint="Введіть пошту" 
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
                          Margin="0 0 0 30"/>
 

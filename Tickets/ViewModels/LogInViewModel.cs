@@ -13,18 +13,18 @@ namespace Tickets.ViewModels
 {
     public class LogInViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
-        private string _login = string.Empty;
+        private string _email = string.Empty;
         private string _password = string.Empty;
-        private bool _isLoginTouched = false;
+        private bool _isEmailTouched = false;
         private bool _isPasswordTouched = false;
 
-        public string Login
+        public string Email
         {
-            get => _login;
+            get => _email;
             set
             {
-                _login = value;
-                _isLoginTouched = true;
+                _email = value;
+                _isEmailTouched = true;
                 OnPropertyChanged();
             }
         }
@@ -63,8 +63,8 @@ namespace Tickets.ViewModels
 
         private bool IsFormValid()
         {
-            return _isLoginTouched && _isPasswordTouched &&
-                   string.IsNullOrEmpty(this[nameof(Login)]) &&
+            return _isEmailTouched && _isPasswordTouched &&
+                   string.IsNullOrEmpty(this[nameof(Email)]) &&
                    string.IsNullOrEmpty(this[nameof(Password)]);
         }
 
@@ -76,14 +76,14 @@ namespace Tickets.ViewModels
             {
                 string error = string.Empty;
 
-                if (columnName == nameof(Login))
+                if (columnName == nameof(Email))
                 {
-                    if (!_isLoginTouched) return string.Empty;
+                    if (!_isEmailTouched) return string.Empty;
 
-                    if (string.IsNullOrWhiteSpace(Login))
-                        error = "Логін обов'язковий!";
-                    else if (Login.Length < 3)
-                        error = "Логін має бути не менше 3 символів!";
+                    if (string.IsNullOrWhiteSpace(Email))
+                        error = "Пошта обов'язкова!";
+                    else if (Email.Length < 5)
+                        error = "Пошта занадто коротка (мін. 5)!";
                 }
 
                 if (columnName == nameof(Password))
