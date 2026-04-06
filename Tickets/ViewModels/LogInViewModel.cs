@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows;
 using Tickets.Infrastructure;
+using Tickets.Data;
 
 namespace Tickets.ViewModels
 {
@@ -48,7 +49,25 @@ namespace Tickets.ViewModels
             LogInCommand = new RelayCommand(
                 execute: obj =>
                 {
-                    MessageBox.Show("Вхід виконано успішно!");
+                    try
+                    {
+                        using var db = new AppDbContext();
+                    
+                        var user = db.Users.FirstOrDefault(u => u.Email == Email && u.Password == Password);
+
+                        if (user != null)
+                        {
+                            MessageBox.Show($"Вітаємо, {user.Name}! Ваша роль: {user.Role}");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Невірна пошта або пароль!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Помилка бази даних: {ex.Message}\n{ex.InnerException?.Message}", "Критична помилка");
+                    }
                 },
                 canExecute: obj => IsFormValid()
             );
