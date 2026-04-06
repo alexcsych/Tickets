@@ -29,12 +29,12 @@ namespace Tickets.ViewModels
         public string Password { get => _password; set { _password = value; _isPasswordTouched = true; OnPropertyChanged(); OnPropertyChanged(nameof(ConfirmPassword)); } }
         public string ConfirmPassword { get => _confirmPassword; set { _confirmPassword = value; _isConfirmPasswordTouched = true; OnPropertyChanged(); } }
 
-        public ICommand RegisterCommand { get; }
+        public ICommand RegistrationCommand { get; }
         public ICommand OpenLogInCommand { get; }
 
         public SignInViewModel()
         {
-            RegisterCommand = new RelayCommand(
+            RegistrationCommand = new RelayCommand(
                 execute: obj =>
                 {
                     MessageBox.Show("Аккаунт створено!");
