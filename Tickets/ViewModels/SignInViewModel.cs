@@ -1,26 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Input;
+using Tickets.Data;
 using Tickets.Infrastructure;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Tickets.Views;
 
 namespace Tickets.ViewModels
 {
     public class SignInViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
-        private string _login = string.Empty;
+        private string _name = string.Empty;
+        private string _lastName = string.Empty;
         private string _email = string.Empty;
         private string _password = string.Empty;
         private string _confirmPassword = string.Empty;
 
-        private bool _isLoginTouched, _isEmailTouched, _isPasswordTouched, _isConfirmPasswordTouched;
+        private bool _isNameTouched, _isLastNameTouched, _isEmailTouched, _isPasswordTouched, _isConfirmPasswordTouched;
 
-        public string Login { get => _login; set { _login = value; _isLoginTouched = true; OnPropertyChanged(); } }
+        public string Name { get => _name; set { _name = value; _isNameTouched = true; OnPropertyChanged(); } }
+        public string LastName { get => _lastName; set { _lastName = value; _isLastNameTouched = true; OnPropertyChanged(); } }
         public string Email { get => _email; set { _email = value; _isEmailTouched = true; OnPropertyChanged(); } }
         public string Password { get => _password; set { _password = value; _isPasswordTouched = true; OnPropertyChanged(); OnPropertyChanged(nameof(ConfirmPassword)); } }
         public string ConfirmPassword { get => _confirmPassword; set { _confirmPassword = value; _isConfirmPasswordTouched = true; OnPropertyChanged(); } }
@@ -48,8 +52,9 @@ namespace Tickets.ViewModels
 
         private bool IsFormValid()
         {
-            return _isLoginTouched && _isEmailTouched && _isPasswordTouched && _isConfirmPasswordTouched &&
-                   string.IsNullOrEmpty(this[nameof(Login)]) &&
+            return _isNameTouched && _isLastNameTouched && _isEmailTouched && _isPasswordTouched && _isConfirmPasswordTouched &&
+                   string.IsNullOrEmpty(this[nameof(Name)]) &&
+                   string.IsNullOrEmpty(this[nameof(LastName)]) &&
                    string.IsNullOrEmpty(this[nameof(Email)]) &&
                    string.IsNullOrEmpty(this[nameof(Password)]) &&
                    string.IsNullOrEmpty(this[nameof(ConfirmPassword)]);
@@ -63,10 +68,15 @@ namespace Tickets.ViewModels
                 string error = string.Empty;
                 switch (name)
                 {
-                    case nameof(Login):
-                        if (!_isLoginTouched) return null!;
-                        if (string.IsNullOrWhiteSpace(Login)) error = "Логін обов'язковий!";
-                        else if (Login.Length < 3) error = "Мін. 3 символи!";
+                    case nameof(Name):
+                        if (!_isNameTouched) return null!;
+                        if (string.IsNullOrWhiteSpace(Name)) error = "Ім'я обов'язкове!";
+                        else if (Name.Length < 2) error = "Мін. 2 символи!";
+                        break;
+                    case nameof(LastName):
+                        if (!_isLastNameTouched) return null!;
+                        if (string.IsNullOrWhiteSpace(LastName)) error = "Призвище обов'язкове!";
+                        else if (LastName.Length < 2) error = "Мін. 2 символи!";
                         break;
                     case nameof(Email):
                         if (!_isEmailTouched) return null!;
