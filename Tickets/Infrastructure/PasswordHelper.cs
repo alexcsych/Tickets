@@ -38,18 +38,19 @@ namespace Tickets.Infrastructure
 
         private static void PasswordChanged(object sender, RoutedEventArgs e)
         {
-            PasswordBox passwordBox = sender as PasswordBox;
-            SetIsUpdating(passwordBox, true);
-            SetPassword(passwordBox, passwordBox.Password);
-            SetIsUpdating(passwordBox, false);
+            if (sender is PasswordBox passwordBox)
+            {
+                SetIsUpdating(passwordBox, true);
+                SetPassword(passwordBox, passwordBox.Password);
+                SetIsUpdating(passwordBox, false);
+            }
         }
 
         private static void OnPasswordPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            PasswordBox passwordBox = sender as PasswordBox;
-            if (passwordBox != null && !GetIsUpdating(passwordBox))
+            if (sender is PasswordBox passwordBox && !GetIsUpdating(passwordBox))
             {
-                passwordBox.Password = (string)e.NewValue;
+                passwordBox.Password = (e.NewValue as string) ?? string.Empty;
             }
         }
 
