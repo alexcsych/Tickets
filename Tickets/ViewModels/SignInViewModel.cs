@@ -37,7 +37,34 @@ namespace Tickets.ViewModels
             RegistrationCommand = new RelayCommand(
                 execute: obj =>
                 {
-                    MessageBox.Show("Аккаунт створено!");
+                    try
+                    {
+                        using var db = new AppDbContext();
+
+                        if (db.Users.Any(u => u.Email == Email))
+                        {
+                            MessageBox.Show("Користувач з такою поштою вже існує!", "Помилка");
+                            return;
+                        }
+
+                        var newUser = new Models.User
+                        {
+                            Name = this.Name,
+                            LastName = this.LastName,
+                            Email = this.Email,
+                            Password = this.Password,
+                            Role = Models.UserRole.Customer
+                        };
+
+                        db.Users.Add(newUser);
+                        db.SaveChanges();
+
+                        MessageBox.Show($"Реєстрація успішна! Вітаємо, {newUser.Name}.");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Помилка при реєстрації: {ex.Message}", "Критична помилка");
+                    }
                 },
                 canExecute: obj => IsFormValid()
             );
