@@ -50,37 +50,37 @@ namespace Tickets.Data
                 new Route
                 {
                     Id = 1,
-                    From = "Запоріжжя",
-                    To = "Київ",
+                    From = "Zaporozhye",
+                    To = "Kyiv",
                     DepartureTime = new DateTime(2026, 5, 10, 08, 00, 00),
-                    Price = 850.00m,
+                    Price = 850,
                     BusId = 1
                 },
                 new Route
                 {
                     Id = 2,
-                    From = "Київ",
-                    To = "Львів",
+                    From = "Kyiv",
+                    To = "Lviv",
                     DepartureTime = new DateTime(2026, 5, 11, 14, 30, 00),
-                    Price = 600.00m,
+                    Price = 600,
                     BusId = 2
                 },
                 new Route
                 {
                     Id = 3,
-                    From = "Київ",
-                    To = "Запоріжжя",
+                    From = "Kyiv",
+                    To = "Zaporozhye",
                     DepartureTime = new DateTime(2026, 5, 21, 12, 30, 00),
-                    Price = 800.00m,
+                    Price = 800,
                     BusId = 2
                 },
                 new Route
                 {
                     Id = 4,
-                    From = "Запоріжжя",
-                    To = "Львів",
+                    From = "Zaporozhye",
+                    To = "Lviv",
                     DepartureTime = new DateTime(2026, 5, 21, 18, 00, 00),
-                    Price = 1300.00m,
+                    Price = 1300,
                     BusId = 1
                 }
             );

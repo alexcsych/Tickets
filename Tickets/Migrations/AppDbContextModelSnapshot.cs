@@ -71,8 +71,8 @@ namespace Tickets.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("To")
                         .IsRequired()
@@ -90,36 +90,36 @@ namespace Tickets.Migrations
                             Id = 1,
                             BusId = 1,
                             DepartureTime = new DateTime(2026, 5, 10, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            From = "Запоріжжя",
-                            Price = 850.00m,
-                            To = "Київ"
+                            From = "Zaporozhye",
+                            Price = 850,
+                            To = "Kyiv"
                         },
                         new
                         {
                             Id = 2,
                             BusId = 2,
                             DepartureTime = new DateTime(2026, 5, 11, 14, 30, 0, 0, DateTimeKind.Unspecified),
-                            From = "Київ",
-                            Price = 600.00m,
-                            To = "Львів"
+                            From = "Kyiv",
+                            Price = 600,
+                            To = "Lviv"
                         },
                         new
                         {
                             Id = 3,
                             BusId = 2,
                             DepartureTime = new DateTime(2026, 5, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
-                            From = "Київ",
-                            Price = 800.00m,
-                            To = "Запоріжжя"
+                            From = "Kyiv",
+                            Price = 800,
+                            To = "Zaporozhye"
                         },
                         new
                         {
                             Id = 4,
                             BusId = 1,
                             DepartureTime = new DateTime(2026, 5, 21, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            From = "Запоріжжя",
-                            Price = 1300.00m,
-                            To = "Львів"
+                            From = "Zaporozhye",
+                            Price = 1300,
+                            To = "Lviv"
                         });
                 });
 

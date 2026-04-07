@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Tickets.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialFullSchemaWithSeeds : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,6 +29,23 @@ namespace Tickets.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Routes",
                 columns: table => new
                 {
@@ -37,7 +54,7 @@ namespace Tickets.Migrations
                     From = table.Column<string>(type: "TEXT", nullable: false),
                     To = table.Column<string>(type: "TEXT", nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Price = table.Column<decimal>(type: "TEXT", nullable: false),
+                    Price = table.Column<int>(type: "INTEGER", nullable: false),
                     BusId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -88,14 +105,23 @@ namespace Tickets.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "LastName", "Name", "Password", "Role" },
+                values: new object[,]
+                {
+                    { 1, "admin@tickets.com", "System", "Admin", "admin_password", 1 },
+                    { 2, "User@mail.com", "User", "User", "user_password", 0 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Routes",
                 columns: new[] { "Id", "BusId", "DepartureTime", "From", "Price", "To" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2026, 5, 10, 8, 0, 0, 0, DateTimeKind.Unspecified), "Запоріжжя", 850.00m, "Київ" },
-                    { 2, 2, new DateTime(2026, 5, 11, 14, 30, 0, 0, DateTimeKind.Unspecified), "Київ", 600.00m, "Львів" },
-                    { 3, 2, new DateTime(2026, 5, 21, 12, 30, 0, 0, DateTimeKind.Unspecified), "Київ", 800.00m, "Запоріжжя" },
-                    { 4, 1, new DateTime(2026, 5, 21, 18, 0, 0, 0, DateTimeKind.Unspecified), "Запоріжжя", 1300.00m, "Львів" }
+                    { 1, 1, new DateTime(2026, 5, 10, 8, 0, 0, 0, DateTimeKind.Unspecified), "Zaporozhye", 850, "Kyiv" },
+                    { 2, 2, new DateTime(2026, 5, 11, 14, 30, 0, 0, DateTimeKind.Unspecified), "Kyiv", 600, "Lviv" },
+                    { 3, 2, new DateTime(2026, 5, 21, 12, 30, 0, 0, DateTimeKind.Unspecified), "Kyiv", 800, "Zaporozhye" },
+                    { 4, 1, new DateTime(2026, 5, 21, 18, 0, 0, 0, DateTimeKind.Unspecified), "Zaporozhye", 1300, "Lviv" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -122,6 +148,9 @@ namespace Tickets.Migrations
 
             migrationBuilder.DropTable(
                 name: "Routes");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Buses");

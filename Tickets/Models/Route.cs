@@ -10,7 +10,7 @@ namespace Tickets.Models
         public string From { get; set; } = string.Empty;
         public string To { get; set; } = string.Empty;
         public DateTime DepartureTime { get; set; }
-        public decimal Price { get; set; }
+        public int Price { get; set; }
         public int BusId { get; set; }
         public Bus? Bus { get; set; }
         public List<Ticket>? Tickets { get; set; }
