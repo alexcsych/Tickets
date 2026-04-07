@@ -74,7 +74,7 @@ namespace Tickets.ViewModels
 
             OpenSignInCommand = new RelayCommand(p =>
             {
-                var signInWindow = new Views.SignIn();
+                var signInWindow = new Views.SignInView();
                 signInWindow.Show();
                 if (p is Window currentWindow) currentWindow.Close();
             });

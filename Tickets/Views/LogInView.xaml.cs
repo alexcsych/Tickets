@@ -12,12 +12,9 @@ using System.Windows.Shapes;
 
 namespace Tickets.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для SignIn.xaml
-    /// </summary>
-    public partial class SignIn : Window
+    public partial class LogInView : Window
     {
-        public SignIn()
+        public LogInView()
         {
             InitializeComponent();
         }
