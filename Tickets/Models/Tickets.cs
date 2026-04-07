@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tickets.Models
+﻿namespace Tickets.Models
 {
     public class Ticket
     {
