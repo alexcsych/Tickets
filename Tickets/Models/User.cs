@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Tickets.Models
@@ -18,6 +19,6 @@ namespace Tickets.Models
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public UserRole Role { get; set; }
-        public List<Ticket>? Tickets { get; set; }
+        public ObservableCollection<Ticket> Tickets { get; set; } = [];
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Tickets.Models
@@ -10,6 +11,6 @@ namespace Tickets.Models
         public string Model { get; set; } = string.Empty;
         public string Number { get; set; } = string.Empty;
         public int Capacity { get; set; }
-        public List<Route>? Routes { get; set; }
+        public ObservableCollection<Route> Routes { get; set; } = [];
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Tickets.Models
@@ -13,6 +16,6 @@ namespace Tickets.Models
         public int Price { get; set; }
         public int BusId { get; set; }
         public Bus? Bus { get; set; }
-        public List<Ticket>? Tickets { get; set; }
+        public ObservableCollection<Ticket> Tickets { get; set; } = [];
     }
 }
