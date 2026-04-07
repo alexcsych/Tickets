@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -102,7 +102,7 @@ namespace Tickets.ViewModels
                         break;
                     case nameof(LastName):
                         if (!_isLastNameTouched) return null!;
-                        if (string.IsNullOrWhiteSpace(LastName)) error = "Призвище обов'язкове!";
+                        if (string.IsNullOrWhiteSpace(LastName)) error = "Прізвище обов'язкове!";
                         else if (LastName.Length < 2) error = "Мін. 2 символи!";
                         break;
                     case nameof(Email):
