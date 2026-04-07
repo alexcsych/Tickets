@@ -1,8 +1,9 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using Tickets.Infrastructure;
+using System.Windows.Input;
 using Tickets.Data;
+using Tickets.Infrastructure;
 
 namespace Tickets.ViewModels
 {
@@ -10,30 +11,11 @@ namespace Tickets.ViewModels
     {
         private string _email = string.Empty;
         private string _password = string.Empty;
-        private bool _isEmailTouched = false;
-        private bool _isPasswordTouched = false;
 
-        public string Email
-        {
-            get => _email;
-            set
-            {
-                _email = value;
-                _isEmailTouched = true;
-                OnPropertyChanged();
-            }
-        }
+        private bool _isEmailTouched, _isPasswordTouched;
 
-        public string Password
-        {
-            get => _password;
-            set
-            {
-                _password = value;
-                _isPasswordTouched = true;
-                OnPropertyChanged();
-            }
-        }
+        public string Email { get => _email; set { _email = value; _isEmailTouched = true; OnPropertyChanged(); } }
+        public string Password { get => _password; set { _password = value; _isPasswordTouched = true; OnPropertyChanged(); } }
 
         public ICommand LogInCommand { get; }
         public ICommand OpenSignInCommand { get; }
@@ -46,7 +28,7 @@ namespace Tickets.ViewModels
                     try
                     {
                         using var db = new AppDbContext();
-                    
+
                         var user = db.Users.FirstOrDefault(u => u.Email == Email && u.Password == Password);
 
                         if (user != null)
@@ -120,9 +102,6 @@ namespace Tickets.ViewModels
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
