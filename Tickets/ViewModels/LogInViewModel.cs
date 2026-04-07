@@ -57,7 +57,13 @@ namespace Tickets.ViewModels
 
                         if (user != null)
                         {
-                            MessageBox.Show($"Вітаємо, {user.Name}! Ваша роль: {user.Role}");
+                            var routesWindow = new Views.RoutesView();
+                            if (routesWindow.DataContext is RoutesViewModel rvm)
+                            {
+                                rvm.CurrentUser = user;
+                            }
+                            routesWindow.Show();
+                            if (obj is Window currentWindow) currentWindow.Close();
                         }
                         else
                         {

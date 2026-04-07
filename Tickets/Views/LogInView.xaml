@@ -36,6 +36,7 @@
                 <Button Content="Увійти" 
                         Command="{Binding LogInCommand}"
                         Margin="0 10 0 10" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         Style="{StaticResource MaterialDesignRaisedButton}"/>
 
                 <Button Content="Нема аккаунту?" 

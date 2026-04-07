@@ -52,6 +52,7 @@
                 <Button Content="Зареєструватися" 
                         Command="{Binding RegistrationCommand}"
                         Margin="0 10 0 10" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         Style="{StaticResource MaterialDesignRaisedButton}"/>
 
                 <Button Content="Вже є аккаунт?" 

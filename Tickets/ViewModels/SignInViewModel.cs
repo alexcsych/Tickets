@@ -59,7 +59,13 @@ namespace Tickets.ViewModels
                         db.Users.Add(newUser);
                         db.SaveChanges();
 
-                        MessageBox.Show($"Реєстрація успішна! Вітаємо, {newUser.Name}.");
+                        var routesWindow = new Views.RoutesView();
+                        if (routesWindow.DataContext is RoutesViewModel rvm)
+                        {
+                            rvm.CurrentUser = newUser;
+                        }
+                        routesWindow.Show();
+                        if (obj is Window currentWindow) currentWindow.Close();
                     }
                     catch (Exception ex)
                     {
