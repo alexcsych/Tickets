@@ -34,6 +34,12 @@ namespace Tickets.ViewModels
 
         public RoutesViewModel()
         {
+            SearchCommand = new RelayCommand(_ => { });
+            BuyTicketCommand = new RelayCommand(_ => { });
+
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                return;
+
             LoadRoutes();
 
             SearchCommand = new RelayCommand(obj =>
@@ -101,19 +107,19 @@ namespace Tickets.ViewModels
                 if (!string.IsNullOrWhiteSpace(From))
                 {
                     var searchFrom = From.Trim().ToLower();
-                    query = query.Where(r => r.From.ToLower().Contains(searchFrom));
+                    query = query.Where(r => r.From != null && EF.Functions.Like(r.From, $"%{searchFrom}%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(To))
                 {
                     var searchTo = To.Trim().ToLower();
-                    query = query.Where(r => r.To.ToLower().Contains(searchTo));
+                    query = query.Where(r => r.To != null && EF.Functions.Like(r.To, $"%{searchTo}%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(BusModel))
                 {
                     var searchBus = BusModel.Trim().ToLower();
-                    query = query.Where(r => r.Bus != null && r.Bus.Model.ToLower().Contains(searchBus));
+                    query = query.Where(r => r.Bus != null && EF.Functions.Like(r.Bus.Model, $"%{searchBus}%"));
                 }
 
                 if (IsAscending)
@@ -122,7 +128,11 @@ namespace Tickets.ViewModels
                     query = query.OrderByDescending(r => r.Price);
 
                 var result = query.ToList();
-                VisibleRoutes = new ObservableCollection<Route>(result);
+                VisibleRoutes.Clear();
+                foreach (var route in result)
+                {
+                    VisibleRoutes.Add(route);
+                }
             }
             catch (Exception ex)
             {
