@@ -9,6 +9,8 @@ namespace Tickets.ViewModels
 {
     public class SignInViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
+        private readonly MainViewModel _mainViewModel;
+
         private string _name = string.Empty;
         private string _lastName = string.Empty;
         private string _email = string.Empty;
@@ -26,8 +28,10 @@ namespace Tickets.ViewModels
         public ICommand RegistrationCommand { get; }
         public ICommand OpenLogInCommand { get; }
 
-        public SignInViewModel()
+        public SignInViewModel(MainViewModel mainViewModel)
         {
+            _mainViewModel = mainViewModel;
+
             RegistrationCommand = new RelayCommand(
                 execute: obj =>
                 {
@@ -53,13 +57,11 @@ namespace Tickets.ViewModels
                         db.Users.Add(newUser);
                         db.SaveChanges();
 
-                        var routesWindow = new Views.RoutesView();
-                        if (routesWindow.DataContext is RoutesViewModel rvm)
+                        var routesVM = new RoutesViewModel(_mainViewModel)
                         {
-                            rvm.CurrentUser = newUser;
-                        }
-                        routesWindow.Show();
-                        if (obj is Window currentWindow) currentWindow.Close();
+                            CurrentUser = newUser
+                        };
+                        _mainViewModel.NavigateTo(routesVM);
                     }
                     catch (Exception ex)
                     {
@@ -71,9 +73,8 @@ namespace Tickets.ViewModels
 
             OpenLogInCommand = new RelayCommand(p =>
             {
-                var logInWindow = new Views.LogInView();
-                logInWindow.Show();
-                if (p is Window currentWindow) currentWindow.Close();
+                var logInVM = new LogInViewModel(_mainViewModel);
+                _mainViewModel.NavigateTo(logInVM);
             });
         }
 

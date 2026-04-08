@@ -12,10 +12,7 @@ using System.Windows.Shapes;
 
 namespace Tickets.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для RoutesView.xaml
-    /// </summary>
-    public partial class RoutesView : Window
+    public partial class RoutesView : UserControl
     {
         public RoutesView()
         {

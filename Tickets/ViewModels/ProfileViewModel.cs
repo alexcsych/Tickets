@@ -10,6 +10,8 @@ namespace Tickets.ViewModels
 {
     public class ProfileViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
+        private readonly MainViewModel _mainViewModel;
+
         private User? _currentUser;
         public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); Name = _currentUser?.Name ?? string.Empty; LastName = _currentUser?.LastName ?? string.Empty; Email = _currentUser?.Email ?? string.Empty; } }
 
@@ -31,8 +33,10 @@ namespace Tickets.ViewModels
         public ICommand ChangePasswordCommand { get; }
         public ICommand OpenRoutesCommand { get; }
 
-        public ProfileViewModel()
+        public ProfileViewModel(MainViewModel mainViewModel)
         {
+            _mainViewModel = mainViewModel;
+
             UpdateProfileCommand = new RelayCommand(
                 execute: obj =>
                 {
@@ -112,15 +116,13 @@ namespace Tickets.ViewModels
             OpenRoutesCommand = new RelayCommand(
                 execute: obj =>
                 {
-                    var routesWindow = new Views.RoutesView();
-                    if (routesWindow.DataContext is RoutesViewModel rvm)
+                    var routesVM = new RoutesViewModel(_mainViewModel)
                     {
-                        rvm.CurrentUser = CurrentUser;
-                    }
-                    routesWindow.Show();
-                    if (obj is Window currentWindow) currentWindow.Close();
+                        CurrentUser = this.CurrentUser
+                    };
+                    _mainViewModel.NavigateTo(routesVM);
                 }
-                );
+            );
         }
 
         private bool IsProfileValid()

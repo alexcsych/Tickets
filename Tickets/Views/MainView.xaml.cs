@@ -12,9 +12,9 @@ using System.Windows.Shapes;
 
 namespace Tickets.Views
 {
-    public partial class ProfileView : UserControl
+    public partial class MainView : Window
     {
-        public ProfileView()
+        public MainView()
         {
             InitializeComponent();
         }

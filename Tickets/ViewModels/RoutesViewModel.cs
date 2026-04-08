@@ -12,6 +12,8 @@ namespace Tickets.ViewModels
 {
     public class RoutesViewModel : INotifyPropertyChanged
     {
+        private readonly MainViewModel _mainViewModel;
+
         private User? _currentUser;
         public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); } }
 
@@ -34,8 +36,10 @@ namespace Tickets.ViewModels
         public ICommand LogOutCommand { get; }
         public ICommand OpenProfileCommand { get; }
 
-        public RoutesViewModel()
+        public RoutesViewModel(MainViewModel mainViewModel)
         {
+            _mainViewModel = mainViewModel;
+
             SearchCommand = new RelayCommand(_ => { });
             BuyTicketCommand = new RelayCommand(_ => { });
             LogOutCommand = new RelayCommand(_ => { });
@@ -98,20 +102,17 @@ namespace Tickets.ViewModels
 
             LogOutCommand = new RelayCommand(obj =>
             {
-                var logInWindow = new Views.LogInView();
-                logInWindow.Show();
-                if (obj is Window currentWindow) currentWindow.Close();
+                var logInVM = new LogInViewModel(_mainViewModel);
+                _mainViewModel.NavigateTo(logInVM);
             });
 
             OpenProfileCommand = new RelayCommand(obj =>
             {
-                var profileWindow = new Views.ProfileView();
-                if (profileWindow.DataContext is ProfileViewModel profile)
+                var profileVM = new ProfileViewModel(_mainViewModel)
                 {
-                    profile.CurrentUser = CurrentUser;
-                }
-                profileWindow.Show();
-                if (obj is Window currentWindow) currentWindow.Close();
+                    CurrentUser = this.CurrentUser
+                };
+                _mainViewModel.NavigateTo(profileVM);
             });
         }
 

@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace Tickets.Views
 {
-    public partial class LogInView : Window
+    public partial class LogInView : UserControl
     {
         public LogInView()
         {

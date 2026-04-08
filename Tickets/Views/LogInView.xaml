@@ -1,4 +1,4 @@
-﻿<Window x:Class="Tickets.Views.LogInView"
+﻿<UserControl x:Class="Tickets.Views.LogInView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,13 +6,7 @@
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i="clr-namespace:Tickets.Infrastructure"
-        xmlns:vm="clr-namespace:Tickets.ViewModels"
-        Style="{StaticResource MaterialDesignWindow}"
-        Title="Вхід в аккаунт" Height="700" Width="600" WindowStartupLocation="CenterScreen">
-
-    <Window.DataContext>
-        <vm:LogInViewModel />
-    </Window.DataContext>
+        xmlns:vm="clr-namespace:Tickets.ViewModels">
 
     <Grid Background="#ffdadada">
         <Border MinWidth="400" Margin="15" Background="White" VerticalAlignment="Center" Padding="30" MaxWidth="400" CornerRadius="20">
@@ -46,4 +40,4 @@
             </StackPanel>
         </Border>
     </Grid>
-</Window>
+</UserControl>
