@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:Tickets.ViewModels"
         xmlns:i="clr-namespace:Tickets.Infrastructure"
         Style="{StaticResource MaterialDesignWindow}"
-        Title="Реєстрація нового аккаунту" Height="600" Width="600" WindowStartupLocation="CenterScreen">
+        Title="Реєстрація нового аккаунту" Height="700" Width="600" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
         <vm:SignInViewModel />
