@@ -31,11 +31,15 @@ namespace Tickets.ViewModels
 
         public ICommand SearchCommand { get; }
         public ICommand BuyTicketCommand { get; }
+        public ICommand LogOutCommand { get; }
+        public ICommand OpenProfileCommand { get; }
 
         public RoutesViewModel()
         {
             SearchCommand = new RelayCommand(_ => { });
             BuyTicketCommand = new RelayCommand(_ => { });
+            LogOutCommand = new RelayCommand(_ => { });
+            OpenProfileCommand = new RelayCommand(_ => { });
 
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
@@ -90,6 +94,24 @@ namespace Tickets.ViewModels
                         MessageBox.Show($"Помилка при купівлі: {ex.Message}");
                     }
                 }
+            });
+
+            LogOutCommand = new RelayCommand(obj =>
+            {
+                var logInWindow = new Views.LogInView();
+                logInWindow.Show();
+                if (obj is Window currentWindow) currentWindow.Close();
+            });
+
+            OpenProfileCommand = new RelayCommand(obj =>
+            {
+                var profileWindow = new Views.ProfileView();
+                if (profileWindow.DataContext is ProfileViewModel profile)
+                {
+                    profile.CurrentUser = CurrentUser;
+                }
+                profileWindow.Show();
+                if (obj is Window currentWindow) currentWindow.Close();
             });
         }
 
