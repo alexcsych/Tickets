@@ -45,6 +45,9 @@ namespace Tickets.ViewModels
                         }
                         else
                         {
+                            this.Password = string.Empty;
+                            this._isPasswordTouched = false;
+                            OnPropertyChanged(nameof(Password));
                             MessageBox.Show("Невірна пошта або пароль!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
