@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:Tickets.ViewModels"
         xmlns:i="clr-namespace:Tickets.Infrastructure"
         Style="{StaticResource MaterialDesignWindow}"
-        Title="Рейси" Height="500" Width="1000" WindowStartupLocation="CenterScreen">
+        Title="Рейси" Height="700" Width="1200" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
         <vm:RoutesViewModel />
@@ -19,49 +19,82 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <materialDesign:Card Grid.Row="0" Margin="10" Padding="15">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Grid.Column="0" 
+                    Command="{Binding ProfileCommand}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    ToolTip="Мій профіль" 
+                    VerticalAlignment="Center"
+                    Margin="0,0,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" />
+                    <TextBlock Text="Профіль" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
 
-                <TextBox Width="180" Margin="10,0"
-                     materialDesign:HintAssist.Hint="Звідки"
-                     Text="{Binding From, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+            <materialDesign:Card Grid.Column="1" Margin="10" Padding="15" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                <TextBox Width="180" Margin="10,0"
-                     materialDesign:HintAssist.Hint="Куди"
-                     Text="{Binding To, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox Width="180" Margin="10,0"
+                             materialDesign:HintAssist.Hint="Звідки"
+                             Text="{Binding From, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
 
-                <TextBox Width="180" Margin="10,0"
-                     materialDesign:HintAssist.Hint="Модель автобуса"
-                     Text="{Binding BusModel, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox Width="180" Margin="10,0"
+                             materialDesign:HintAssist.Hint="Куди"
+                             Text="{Binding To, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+
+                    <TextBox Width="180" Margin="10,0"
+                             materialDesign:HintAssist.Hint="Модель автобуса"
+                             Text="{Binding BusModel, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                 
-                <ToggleButton IsChecked="{Binding IsAscending}"
-                  Margin="10,0"
-                  Style="{StaticResource MaterialDesignActionToggleButton}"
-                  ToolTip="Сортування за ціною">
-                    <materialDesign:ToggleButtonAssist.OnContent>
-                        <materialDesign:PackIcon Kind="SortNumericAscending" />
-                    </materialDesign:ToggleButtonAssist.OnContent>
-                    <materialDesign:PackIcon Kind="SortNumericDescending" />
-                </ToggleButton>
+                    <ToggleButton IsChecked="{Binding IsAscending}"
+                                  Margin="10,0"
+                                  Style="{StaticResource MaterialDesignActionToggleButton}"
+                                  ToolTip="Сортування за ціною">
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon Kind="SortNumericAscending" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                        <materialDesign:PackIcon Kind="SortNumericDescending" />
+                    </ToggleButton>
 
-                <Button Command="{Binding SearchCommand}"
-                    Margin="20,0,10,0"
-                    Content="{materialDesign:PackIcon Kind=Magnify}"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                    ToolTip="Шукати рейси" />
+                    <Button Command="{Binding SearchCommand}"
+                            Margin="20,0,10,0"
+                            Content="{materialDesign:PackIcon Kind=Magnify}"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            ToolTip="Шукати рейси" />
 
-                <Button Command="{Binding SearchCommand}" 
-                    CommandParameter="Clear"
-                    Margin="5,0"
-                    Content="{materialDesign:PackIcon Kind=Refresh}"
+                    <Button Command="{Binding SearchCommand}" 
+                            CommandParameter="Clear"
+                            Margin="5,0"
+                            Content="{materialDesign:PackIcon Kind=Refresh}"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            ToolTip="Скинути фільтри" />
+                </StackPanel>
+            </materialDesign:Card>
+
+            <Button Grid.Column="2" 
+                    Command="{Binding LogoutCommand}"
                     Style="{StaticResource MaterialDesignOutlinedButton}"
-                    ToolTip="Скинути фільтри" />
-            </StackPanel>
-        </materialDesign:Card>
+                    ToolTip="Вийти з аккаунта" 
+                    VerticalAlignment="Center"
+                    Margin="0,0,0,0"
+                    Background="white">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Logout" VerticalAlignment="Center" />
+                        <TextBlock Text="Вихід" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+             </Button>
+        </Grid>
         <ListBox Grid.Row="1" ItemsSource="{Binding VisibleRoutes}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Center">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -104,11 +137,11 @@
                             </StackPanel>
 
                             <Button Grid.Column="4" 
-                                Command="{Binding DataContext.BuyTicketCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                CommandParameter="{Binding}"
-                                Content="{Binding Price}"
-                                ContentStringFormat="{}Купити за {0} грн"
-                                Style="{StaticResource MaterialDesignRaisedButton}" />
+                                    Command="{Binding DataContext.BuyTicketCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{Binding Price}"
+                                    ContentStringFormat="{}Купити за {0} грн"
+                                    Style="{StaticResource MaterialDesignRaisedButton}" />
                         </Grid>
                     </materialDesign:Card>
                 </DataTemplate>
