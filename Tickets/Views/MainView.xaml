@@ -34,6 +34,9 @@
                 <DataTemplate DataType="{x:Type vm:TicketsViewModel}">
                     <views:TicketsView />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:AdminViewModel}">
+                    <views:AdminView />
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </Grid>

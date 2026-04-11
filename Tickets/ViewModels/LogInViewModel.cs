@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using Tickets.Data;
 using Tickets.Infrastructure;
+using Tickets.Models;
 
 namespace Tickets.ViewModels
 {
@@ -37,11 +38,19 @@ namespace Tickets.ViewModels
 
                         if (user != null)
                         {
-                            var routesVM = new RoutesViewModel(_mainViewModel)
+                            if (user.Role == UserRole.Admin)
                             {
-                                CurrentUser = user
-                            };
-                            _mainViewModel.NavigateTo(routesVM);
+                                var result = MessageBox.Show("Бажаєте увійти як адміністратор?",
+                                    "Вибір режиму", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                                if (result == MessageBoxResult.Yes)
+                                {
+                                    _mainViewModel.NavigateTo(new AdminViewModel(_mainViewModel));
+                                    return;
+                                }
+                            }
+
+                            _mainViewModel.NavigateTo(new RoutesViewModel(_mainViewModel) { CurrentUser = user });
                         }
                         else
                         {
