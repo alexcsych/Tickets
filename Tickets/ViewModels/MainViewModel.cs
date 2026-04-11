@@ -11,14 +11,27 @@ namespace Tickets.ViewModels
         private object? _currentView;
         public object? CurrentView { get => _currentView; set { _currentView = value; OnPropertyChanged(); } }
 
+        private object? _previousView;
+
         public MainViewModel()
         {
             CurrentView = new LogInViewModel(this);
         }
 
-        public void NavigateTo(object viewModel)
+        public void NavigateTo(object nextView)
         {
-            CurrentView = viewModel;
+            if (CurrentView is not null and not LogInViewModel and not SignInViewModel)
+            {
+                _previousView = CurrentView;
+            }
+            CurrentView = nextView;
+        }
+
+        public void GoBack()
+        {
+            if (_previousView != null)
+                CurrentView = _previousView;
+                _previousView = null;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
