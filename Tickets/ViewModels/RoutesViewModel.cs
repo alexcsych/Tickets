@@ -102,17 +102,17 @@ namespace Tickets.ViewModels
 
             LogOutCommand = new RelayCommand(obj =>
             {
-                var logInVM = new LogInViewModel(_mainViewModel);
-                _mainViewModel.NavigateTo(logInVM);
+                _mainViewModel.NavigateTo(new LogInViewModel(_mainViewModel));
             });
 
             OpenProfileCommand = new RelayCommand(obj =>
             {
-                var profileVM = new ProfileViewModel(_mainViewModel)
+                _mainViewModel.NavigateTo(new ProfileViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
+            });
+
+            OpenTicketsCommand = new RelayCommand(_ =>
                 {
-                    CurrentUser = this.CurrentUser
-                };
-                _mainViewModel.NavigateTo(profileVM);
+                _mainViewModel.NavigateTo(new TicketsViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
             });
         }
 

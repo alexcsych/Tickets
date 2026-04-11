@@ -61,8 +61,7 @@ namespace Tickets.ViewModels
 
             OpenSignInCommand = new RelayCommand(p =>
             {
-                var signInVM = new SignInViewModel(_mainViewModel);
-                _mainViewModel.NavigateTo(signInVM);
+                _mainViewModel.NavigateTo(new SignInViewModel(_mainViewModel));
             });
         }
 

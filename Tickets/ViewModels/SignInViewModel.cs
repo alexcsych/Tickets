@@ -57,11 +57,7 @@ namespace Tickets.ViewModels
                         db.Users.Add(newUser);
                         db.SaveChanges();
 
-                        var routesVM = new RoutesViewModel(_mainViewModel)
-                        {
-                            CurrentUser = newUser
-                        };
-                        _mainViewModel.NavigateTo(routesVM);
+                        _mainViewModel.NavigateTo(new RoutesViewModel(_mainViewModel) { CurrentUser = newUser } );
                     }
                     catch (Exception ex)
                     {
@@ -73,8 +69,7 @@ namespace Tickets.ViewModels
 
             OpenLogInCommand = new RelayCommand(p =>
             {
-                var logInVM = new LogInViewModel(_mainViewModel);
-                _mainViewModel.NavigateTo(logInVM);
+                _mainViewModel.NavigateTo(new LogInViewModel(_mainViewModel));
             });
         }
 
