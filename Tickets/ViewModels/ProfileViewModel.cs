@@ -103,6 +103,8 @@ namespace Tickets.ViewModels
                             ConfirmPassword = string.Empty;
                             _isPasswordTouched = false;
                             _isConfirmPasswordTouched = false;
+                            OnPropertyChanged(nameof(Password));
+                            OnPropertyChanged(nameof(ConfirmPassword));
                         }
                     }
                     catch (Exception ex)
