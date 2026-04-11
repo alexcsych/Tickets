@@ -15,7 +15,7 @@ namespace Tickets.ViewModels
         private readonly MainViewModel _mainViewModel;
 
         private User? _currentUser;
-        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); } }
+        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); LoadRoutes(); } }
 
         private string _from = string.Empty;
         private string _to = string.Empty;
@@ -35,20 +35,11 @@ namespace Tickets.ViewModels
         public ICommand BuyTicketCommand { get; }
         public ICommand LogOutCommand { get; }
         public ICommand OpenProfileCommand { get; }
+        public ICommand OpenTicketsCommand { get; }
 
         public RoutesViewModel(MainViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
-
-            SearchCommand = new RelayCommand(_ => { });
-            BuyTicketCommand = new RelayCommand(_ => { });
-            LogOutCommand = new RelayCommand(_ => { });
-            OpenProfileCommand = new RelayCommand(_ => { });
-
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-                return;
-
-            LoadRoutes();
 
             SearchCommand = new RelayCommand(obj =>
             {
@@ -111,7 +102,7 @@ namespace Tickets.ViewModels
             });
 
             OpenTicketsCommand = new RelayCommand(_ =>
-                {
+            {
                 _mainViewModel.NavigateTo(new TicketsViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
             });
         }
