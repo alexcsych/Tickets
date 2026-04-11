@@ -56,7 +56,7 @@
                     Style="{StaticResource MaterialDesignRaisedButton}"/>
 
                 <Button Content="Повернутися" 
-                    Command="{Binding OpenRoutesCommand}"
+                    Command="{Binding GoBackCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                     Style="{StaticResource MaterialDesignFlatButton}" />
             </StackPanel>

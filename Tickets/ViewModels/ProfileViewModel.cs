@@ -31,7 +31,7 @@ namespace Tickets.ViewModels
 
         public ICommand UpdateProfileCommand { get; }
         public ICommand ChangePasswordCommand { get; }
-        public ICommand OpenRoutesCommand { get; }
+        public ICommand GoBackCommand { get; }
 
         public ProfileViewModel(MainViewModel mainViewModel)
         {
@@ -113,16 +113,10 @@ namespace Tickets.ViewModels
                 canExecute: obj => IsPasswordValid()
             );
 
-            OpenRoutesCommand = new RelayCommand(
-                execute: obj =>
-                {
-                    var routesVM = new RoutesViewModel(_mainViewModel)
-                    {
-                        CurrentUser = this.CurrentUser
-                    };
-                    _mainViewModel.NavigateTo(routesVM);
-                }
-            );
+            GoBackCommand = new RelayCommand(_ =>
+            {
+                _mainViewModel.GoBack();
+            });
         }
 
         private bool IsProfileValid()
