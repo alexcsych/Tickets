@@ -39,7 +39,7 @@
                     Command="{Binding OpenTicketsCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                     Style="{StaticResource MaterialDesignRaisedButton}"
-                    ToolTip="Моя квитки" 
+                    ToolTip="Мої квитки" 
                     VerticalAlignment="Center"
                     Margin="0,0,0,0">
                 <StackPanel Orientation="Horizontal">
@@ -118,18 +118,18 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Column = "0" VerticalAlignment="Center">
+                            <StackPanel Grid.Column = "0" VerticalAlignment="Center" Background="Transparent" ToolTip="Маршрут рейсу">
                                 <TextBlock Text="{Binding From}" FontWeight="Bold" FontSize="16"/>
                                 <materialDesign:PackIcon Kind="ArrowDownward" HorizontalAlignment="Left" Foreground="Gray"/>
                                 <TextBlock Text="{Binding To}" FontWeight="Bold" FontSize="16"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0" Background="Transparent" ToolTip="Дата та час рейсу">
                                 <TextBlock Text="{Binding DepartureTime, StringFormat=\{0:dd.MM.yyyy\}}" />
                                 <TextBlock Text="{Binding DepartureTime, StringFormat=\{0:HH:mm\}}" FontWeight="Light"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Background="Transparent" ToolTip="Модель та номер автобусу">
                                 <TextBlock Text="{Binding Bus.Model}" />
                                 <TextBlock Text="{Binding Bus.Number}" FontSize="10" Foreground="Gray"/>
                             </StackPanel>
