@@ -31,6 +31,9 @@
                 <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
                     <views:ProfileView />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:TicketsViewModel}">
+                    <views:TicketsView />
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </Grid>
