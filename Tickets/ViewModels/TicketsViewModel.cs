@@ -13,25 +13,20 @@ using Tickets.Models;
 
 namespace Tickets.ViewModels
 {
-    public class TicketsViewModel : INotifyPropertyChanged
+    public class TicketsViewModel : BaseViewModel
     {
-        private readonly MainViewModel _mainViewModel;
-
         private User? _currentUser;
-        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); LoadTickets(); } }
-
         private string _from = string.Empty;
         private string _to = string.Empty;
         private string _busModel = string.Empty;
-
         private bool _isAscending = true;
-        public bool IsAscending { get => _isAscending; set { _isAscending = value; OnPropertyChanged(); LoadTickets(); } }
+        private ObservableCollection<Ticket> _visibleTickets = [];
 
+        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); LoadTickets(); } }
         public string From { get => _from; set { _from = value; OnPropertyChanged(); } }
         public string To { get => _to; set { _to = value; OnPropertyChanged(); } }
         public string BusModel { get => _busModel; set { _busModel = value; OnPropertyChanged(); } }
-
-        private ObservableCollection<Ticket> _visibleTickets = [];
+        public bool IsAscending { get => _isAscending; set { _isAscending = value; OnPropertyChanged(); LoadTickets(); } }
         public ObservableCollection<Ticket> VisibleTickets { get => _visibleTickets; set { _visibleTickets = value; OnPropertyChanged(); } }
 
         public ICommand SearchCommand { get; }
@@ -40,63 +35,71 @@ namespace Tickets.ViewModels
         public ICommand OpenProfileCommand { get; }
         public ICommand OpenRoutesCommand { get; }
 
-        public TicketsViewModel(MainViewModel mainViewModel)
+        public TicketsViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
-            _mainViewModel = mainViewModel;
+            SearchCommand = new RelayCommand(obj => Search(obj));
 
-            SearchCommand = new RelayCommand(obj =>
+            ReturnTicketCommand = new RelayCommand(obj => ReturnTicket(obj));
+
+            LogOutCommand = new RelayCommand(_ => LogOut());
+
+            OpenProfileCommand = new RelayCommand(_ => OpenProfile());
+
+            OpenRoutesCommand = new RelayCommand(_ => OpenRoutes());
+        }
+
+        private void Search(object obj)
+        {
+            if (obj?.ToString() == "Clear")
             {
-                if (obj?.ToString() == "Clear")
-                {
-                    From = string.Empty;
-                    To = string.Empty;
-                    BusModel = string.Empty;
-                    IsAscending = true;
-                }
+                From = string.Empty;
+                To = string.Empty;
+                BusModel = string.Empty;
+                IsAscending = true;
+            }
 
-                LoadTickets();
-            });
+            LoadTickets();
+        }
 
-            ReturnTicketCommand = new RelayCommand(obj =>
+        private void ReturnTicket(object obj)
+        {
+            if (obj is Ticket ticket)
             {
-                if (obj is Ticket ticket)
-                {
-                    var result = MessageBox.Show($"Ви впевнені, що хочете повернути квиток на рейс {ticket.Route?.To}?",
-                        "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show($"Ви впевнені, що хочете повернути квиток на рейс {ticket.Route?.To}?",
+                    "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                    if (result == MessageBoxResult.Yes)
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
                     {
-                        try
-                        {
-                            using var db = new AppDbContext();
-                            db.Tickets.Remove(ticket);
-                            db.SaveChanges();
+                        using var db = new AppDbContext();
+                        db.Tickets.Remove(ticket);
+                        db.SaveChanges();
 
-                            VisibleTickets.Remove(ticket);
-                            MessageBox.Show("Квиток успішно повернуто!");
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Помилка при поверненні: {ex.Message}");
-                        }
+                        VisibleTickets.Remove(ticket);
+                        MessageBox.Show("Квиток успішно повернуто!");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Помилка при поверненні: {ex.Message}");
                     }
                 }
-            });
+            }
+        }
 
-            LogOutCommand = new RelayCommand(obj =>
-            {
-                _mainViewModel.NavigateTo(new LogInViewModel(_mainViewModel));
-            });
+        private void LogOut()
+        {
+            MainViewModel.NavigateTo(new LogInViewModel(MainViewModel));
+        }
 
-            OpenProfileCommand = new RelayCommand(obj =>
-            {
-                _mainViewModel.NavigateTo(new ProfileViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
-            });
+        private void OpenProfile()
+        {
+            MainViewModel.NavigateTo(new ProfileViewModel(MainViewModel) { CurrentUser = this.CurrentUser });
+        }
 
-            OpenRoutesCommand = new RelayCommand(_ =>
-            {
-                _mainViewModel.NavigateTo(new RoutesViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
-            });
+        private void OpenRoutes()
+        {
+            MainViewModel.NavigateTo(new RoutesViewModel(MainViewModel) { CurrentUser = this.CurrentUser });
         }
 
         private void LoadTickets()
@@ -149,8 +152,5 @@ namespace Tickets.ViewModels
                 MessageBox.Show($"Помилка завантаження квитків: {ex.Message}");
             }
         } 
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

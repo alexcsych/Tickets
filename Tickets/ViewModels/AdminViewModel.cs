@@ -12,33 +12,36 @@ using Tickets.Models;
 
 namespace Tickets.ViewModels
 {
-    public class AdminViewModel : INotifyPropertyChanged
+    public class AdminViewModel : BaseViewModel
     {
-        private readonly MainViewModel _mainViewModel;
-
         public List<string> Tables { get; } = ["Користувачі", "Рейси", "Автобуси", "Квитки"];
 
         private object? _selectedItem;
-        public object? SelectedItem { get => _selectedItem; set { _selectedItem = value; OnPropertyChanged(); } }
 
         private string _selectedTable = string.Empty;
-        public string SelectedTable { get => _selectedTable; set { _selectedTable = value; OnPropertyChanged(); LoadCurrentTable(); } }
 
         private IEnumerable _currentData = new List<object>();
+
+        public object? SelectedItem { get => _selectedItem; set { _selectedItem = value; OnPropertyChanged(); } }
+        public string SelectedTable { get => _selectedTable; set { if (_selectedTable == value) return; _selectedTable = value; OnPropertyChanged(); LoadCurrentTable();  } }
         public IEnumerable CurrentData { get => _currentData; set { _currentData = value; OnPropertyChanged(); } }
 
         public ICommand SaveChangesCommand { get; }
         public ICommand LogOutCommand { get; }
         public ICommand DeleteCommand { get; }
 
-        public AdminViewModel(MainViewModel mainViewModel)
+        public AdminViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
-            _mainViewModel = mainViewModel;
             SelectedTable = Tables[0];
 
             SaveChangesCommand = new RelayCommand(_ => SaveAll());
-            LogOutCommand = new RelayCommand(_ => _mainViewModel.NavigateTo(new LogInViewModel(_mainViewModel)));
+            LogOutCommand = new RelayCommand(_ => LogOut());
             DeleteCommand = new RelayCommand(param => DeleteItem(param));
+        }
+
+        private void LogOut()
+        {
+            MainViewModel.NavigateTo(new LogInViewModel(MainViewModel));
         }
 
         private void LoadCurrentTable()
@@ -95,8 +98,5 @@ namespace Tickets.ViewModels
                 MessageBox.Show($"Не вдалося видалити: {ex.Message}");
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

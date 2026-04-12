@@ -8,10 +8,8 @@ using Tickets.Models;
 
 namespace Tickets.ViewModels
 {
-    public class LogInViewModel : INotifyPropertyChanged, IDataErrorInfo
+    public class LogInViewModel : BaseViewModel, IDataErrorInfo
     {
-        private readonly MainViewModel _mainViewModel;
-
         private string _email = string.Empty;
         private string _password = string.Empty;
 
@@ -23,55 +21,55 @@ namespace Tickets.ViewModels
         public ICommand LogInCommand { get; }
         public ICommand OpenSignInCommand { get; }
 
-        public LogInViewModel(MainViewModel mainViewModel)
+        public LogInViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
-            _mainViewModel = mainViewModel;
+            LogInCommand = new RelayCommand( execute: obj => LogIn(), canExecute: obj => IsFormValid());
 
-            LogInCommand = new RelayCommand(
-                execute: obj =>
-                {
-                    try
-                    {
-                        using var db = new AppDbContext();
+            OpenSignInCommand = new RelayCommand(p => OpenSignIn());
+        }
 
-                        var user = db.Users.FirstOrDefault(u => u.Email == Email && u.Password == Password);
-
-                        if (user != null)
-                        {
-                            if (user.Role == UserRole.Admin)
-                            {
-                                var result = MessageBox.Show("Бажаєте увійти як адміністратор?",
-                                    "Вибір режиму", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                                if (result == MessageBoxResult.Yes)
-                                {
-                                    _mainViewModel.NavigateTo(new AdminViewModel(_mainViewModel));
-                                    return;
-                                }
-                            }
-
-                            _mainViewModel.NavigateTo(new RoutesViewModel(_mainViewModel) { CurrentUser = user });
-                        }
-                        else
-                        {
-                            this.Password = string.Empty;
-                            this._isPasswordTouched = false;
-                            OnPropertyChanged(nameof(Password));
-                            MessageBox.Show("Невірна пошта або пароль!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Помилка бази даних: {ex.Message}\n{ex.InnerException?.Message}", "Критична помилка");
-                    }
-                },
-                canExecute: obj => IsFormValid()
-            );
-
-            OpenSignInCommand = new RelayCommand(p =>
+        private void LogIn()
+        {
+            try
             {
-                _mainViewModel.NavigateTo(new SignInViewModel(_mainViewModel));
-            });
+                using var db = new AppDbContext();
+
+                var user = db.Users.FirstOrDefault(u => u.Email == Email && u.Password == Password);
+
+                if (user != null)
+                {
+                    if (user.Role == UserRole.Admin)
+                    {
+                        var result = MessageBox.Show("Бажаєте увійти як адміністратор?",
+                            "Вибір режиму", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            MainViewModel.NavigateTo(new AdminViewModel(MainViewModel));
+                            return;
+                        }
+                    }
+
+                    MainViewModel.NavigateTo(new RoutesViewModel(MainViewModel) { CurrentUser = user });
+                }
+                else
+                {
+                    this.Password = string.Empty;
+                    this._isPasswordTouched = false;
+                    OnPropertyChanged(nameof(Password));
+                    MessageBox.Show("Невірна пошта або пароль!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка бази даних: {ex.Message}\n{ex.InnerException?.Message}", "Критична помилка");
+            }
+        }
+
+
+        private void OpenSignIn()
+        {
+            MainViewModel.NavigateTo(new SignInViewModel(MainViewModel));
         }
 
         private bool IsFormValid()
@@ -112,8 +110,5 @@ namespace Tickets.ViewModels
                 return error;
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

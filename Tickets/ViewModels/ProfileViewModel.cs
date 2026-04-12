@@ -8,13 +8,9 @@ using Tickets.Data;
 
 namespace Tickets.ViewModels
 {
-    public class ProfileViewModel : INotifyPropertyChanged, IDataErrorInfo
+    public class ProfileViewModel : BaseViewModel, IDataErrorInfo
     {
-        private readonly MainViewModel _mainViewModel;
-
         private User? _currentUser;
-        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); Name = _currentUser?.Name ?? string.Empty; LastName = _currentUser?.LastName ?? string.Empty; Email = _currentUser?.Email ?? string.Empty; } }
-
         private string _name = string.Empty;
         private string _lastName = string.Empty;
         private string _email = string.Empty;
@@ -22,7 +18,8 @@ namespace Tickets.ViewModels
         private string _confirmPassword = string.Empty;
 
         private bool _isNameTouched, _isLastNameTouched, _isEmailTouched, _isPasswordTouched, _isConfirmPasswordTouched;
-
+       
+        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); Name = _currentUser?.Name ?? string.Empty; LastName = _currentUser?.LastName ?? string.Empty; Email = _currentUser?.Email ?? string.Empty; } }
         public string Name { get => _name; set { _name = value; _isNameTouched = true; OnPropertyChanged(); } }
         public string LastName { get => _lastName; set { _lastName = value; _isLastNameTouched = true; OnPropertyChanged(); } }
         public string Email { get => _email; set { _email = value; _isEmailTouched = true; OnPropertyChanged(); } }
@@ -33,92 +30,90 @@ namespace Tickets.ViewModels
         public ICommand ChangePasswordCommand { get; }
         public ICommand GoBackCommand { get; }
 
-        public ProfileViewModel(MainViewModel mainViewModel)
+        public ProfileViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
-            _mainViewModel = mainViewModel;
+            UpdateProfileCommand = new RelayCommand( execute: obj => UpdateProfile(), canExecute: obj => IsProfileValid());
 
-            UpdateProfileCommand = new RelayCommand(
-                execute: obj =>
-                {
-                    try
-                    {
-                        if (CurrentUser == null) return;
-                        if (Name == CurrentUser.Name && LastName == CurrentUser.LastName && Email == CurrentUser.Email)
-                        {
-                            MessageBox.Show("Ви не внесли жодних змін.", "Інформація");
-                            return;
-                        }
+            ChangePasswordCommand = new RelayCommand( execute: obj => ChangePassword(), canExecute: obj => IsPasswordValid());
 
-                        using var db = new AppDbContext();
-                        var userInDb = db.Users.FirstOrDefault(u => u.Id == CurrentUser.Id);
+            GoBackCommand = new RelayCommand(_ => GoBack());
+        }
 
-                        if (userInDb != null)
-                        {
-                            userInDb.Name = Name;
-                            userInDb.LastName = LastName;
-                            userInDb.Email = Email;
-
-                            db.SaveChanges();
-
-                            CurrentUser.Name = Name;
-                            CurrentUser.LastName = LastName;
-                            CurrentUser.Email = Email;
-
-                            MessageBox.Show("Профіль успішно оновлено!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Помилка оновлення: {ex.Message}", "Помилка");
-                    }
-                },
-                canExecute: obj => IsProfileValid()
-            );
-
-            ChangePasswordCommand = new RelayCommand(
-                execute: obj =>
-                {
-                    try
-                    {
-                        if (CurrentUser == null) return;
-                        if (Password == CurrentUser.Password)
-                        {
-                            MessageBox.Show("Новий пароль не може збігатися зі старим!", "Увага");
-                            return;
-                        }
-
-                        using var db = new AppDbContext();
-                        var userInDb = db.Users.FirstOrDefault(u => u.Id == CurrentUser.Id);
-
-                        if (userInDb != null)
-                        {
-                            userInDb.Password = Password;
-                            db.SaveChanges();
-
-                            CurrentUser.Password = Password;
-
-                            MessageBox.Show("Пароль змінено!", "Успіх");
-
-                            Password = string.Empty;
-                            ConfirmPassword = string.Empty;
-                            _isPasswordTouched = false;
-                            _isConfirmPasswordTouched = false;
-                            OnPropertyChanged(nameof(Password));
-                            OnPropertyChanged(nameof(ConfirmPassword));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Помилка: {ex.Message}");
-                    }
-                },
-                canExecute: obj => IsPasswordValid()
-            );
-
-            GoBackCommand = new RelayCommand(_ =>
+        private void UpdateProfile()
+        {
+            try
             {
-                _mainViewModel.GoBack();
-            });
+                if (CurrentUser == null) return;
+                if (Name == CurrentUser.Name && LastName == CurrentUser.LastName && Email == CurrentUser.Email)
+                {
+                    MessageBox.Show("Ви не внесли жодних змін.", "Інформація");
+                    return;
+                }
+
+                using var db = new AppDbContext();
+                var userInDb = db.Users.FirstOrDefault(u => u.Id == CurrentUser.Id);
+
+                if (userInDb != null)
+                {
+                    userInDb.Name = Name;
+                    userInDb.LastName = LastName;
+                    userInDb.Email = Email;
+
+                    db.SaveChanges();
+
+                    CurrentUser.Name = Name;
+                    CurrentUser.LastName = LastName;
+                    CurrentUser.Email = Email;
+
+                    MessageBox.Show("Профіль успішно оновлено!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка оновлення: {ex.Message}", "Помилка");
+            }
+        }
+
+        private void ChangePassword()
+        {
+            try
+            {
+                if (CurrentUser == null) return;
+                if (Password == CurrentUser.Password)
+                {
+                    MessageBox.Show("Новий пароль не може збігатися зі старим!", "Увага");
+                    return;
+                }
+
+                using var db = new AppDbContext();
+                var userInDb = db.Users.FirstOrDefault(u => u.Id == CurrentUser.Id);
+
+                if (userInDb != null)
+                {
+                    userInDb.Password = Password;
+                    db.SaveChanges();
+
+                    CurrentUser.Password = Password;
+
+                    MessageBox.Show("Пароль змінено!", "Успіх");
+
+                    Password = string.Empty;
+                    ConfirmPassword = string.Empty;
+                    _isPasswordTouched = false;
+                    _isConfirmPasswordTouched = false;
+                    OnPropertyChanged(nameof(Password));
+                    OnPropertyChanged(nameof(ConfirmPassword));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка: {ex.Message}");
+            }
+        }
+
+        private void GoBack()
+        {
+            MainViewModel.GoBack();
         }
 
         private bool IsProfileValid()
@@ -175,8 +170,5 @@ namespace Tickets.ViewModels
                 return error;
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

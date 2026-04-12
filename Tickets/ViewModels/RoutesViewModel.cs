@@ -10,25 +10,20 @@ using Tickets.Models;
 
 namespace Tickets.ViewModels
 {
-    public class RoutesViewModel : INotifyPropertyChanged
+    public class RoutesViewModel : BaseViewModel
     {
-        private readonly MainViewModel _mainViewModel;
-
         private User? _currentUser;
-        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); LoadRoutes(); } }
-
         private string _from = string.Empty;
         private string _to = string.Empty;
         private string _busModel = string.Empty;
-
         private bool _isAscending = true;
-        public bool IsAscending { get => _isAscending; set { _isAscending = value; OnPropertyChanged(); LoadRoutes(); } }
+        private ObservableCollection<Route> _visibleRoutes = [];
 
+        public User? CurrentUser { get => _currentUser; set { _currentUser = value; OnPropertyChanged(); LoadRoutes(); } }
         public string From { get => _from; set { _from = value; OnPropertyChanged(); } }
         public string To { get => _to; set { _to = value; OnPropertyChanged(); } }
         public string BusModel { get => _busModel; set { _busModel = value; OnPropertyChanged(); } }
-
-        private ObservableCollection<Route> _visibleRoutes = [];
+        public bool IsAscending { get => _isAscending; set { _isAscending = value; OnPropertyChanged(); LoadRoutes(); } }
         public ObservableCollection<Route> VisibleRoutes { get => _visibleRoutes; set { _visibleRoutes = value; OnPropertyChanged(); } }
 
         public ICommand SearchCommand { get; }
@@ -37,74 +32,82 @@ namespace Tickets.ViewModels
         public ICommand OpenProfileCommand { get; }
         public ICommand OpenTicketsCommand { get; }
 
-        public RoutesViewModel(MainViewModel mainViewModel)
+        public RoutesViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
-            _mainViewModel = mainViewModel;
+            SearchCommand = new RelayCommand(obj => Search(obj));
 
-            SearchCommand = new RelayCommand(obj =>
+            BuyTicketCommand = new RelayCommand(obj => BuyTicket(obj));
+
+            LogOutCommand = new RelayCommand(_ => LogOut());
+
+            OpenProfileCommand = new RelayCommand(_ => OpenProfile());
+
+            OpenTicketsCommand = new RelayCommand(_ => OpenTickets());
+        }
+
+        private void Search(object obj)
+        {
+            if (obj?.ToString() == "Clear")
             {
-                if (obj?.ToString() == "Clear")
+                From = string.Empty;
+                To = string.Empty;
+                BusModel = string.Empty;
+                IsAscending = true;
+            }
+
+            LoadRoutes();
+        }
+
+        private void BuyTicket(object obj)
+        {
+            if (obj is Route selectedRoute && CurrentUser != null)
+            {
+                if (selectedRoute.Tickets.Count >= (selectedRoute.Bus?.Capacity ?? 0))
                 {
-                    From = string.Empty;
-                    To = string.Empty;
-                    BusModel = string.Empty;
-                    IsAscending = true;
+                    MessageBox.Show("Місць більше немає!", "Увага");
+                    return;
                 }
 
-                LoadRoutes();
-            });
-
-            BuyTicketCommand = new RelayCommand(obj =>
-            {
-                if (obj is Route selectedRoute && CurrentUser != null)
+                try
                 {
-                    if (selectedRoute.Tickets.Count >= (selectedRoute.Bus?.Capacity ?? 0))
+                    using var db = new AppDbContext();
+
+                    var newTicket = new Ticket
                     {
-                        MessageBox.Show("Місць більше немає!", "Увага");
-                        return;
-                    }
+                        RouteId = selectedRoute.Id,
+                        UserId = CurrentUser.Id,
+                        PurchaseDate = DateTime.Now
+                    };
 
-                    try
-                    {
-                        using var db = new AppDbContext();
+                    db.Tickets.Add(newTicket);
+                    db.SaveChanges();
 
-                        var newTicket = new Ticket
-                        {
-                            RouteId = selectedRoute.Id,
-                            UserId = CurrentUser.Id,
-                            PurchaseDate = DateTime.Now
-                        };
+                    selectedRoute.Tickets.Add(newTicket);
 
-                        db.Tickets.Add(newTicket);
-                        db.SaveChanges();
+                    OnPropertyChanged(nameof(VisibleRoutes));
 
-                        selectedRoute.Tickets.Add(newTicket);
-
-                        OnPropertyChanged(nameof(VisibleRoutes));
-
-                        MessageBox.Show($"Квиток до міста {selectedRoute.To} успішно куплено!");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Помилка при купівлі: {ex.Message}");
-                    }
+                    MessageBox.Show($"Квиток до міста {selectedRoute.To} успішно куплено!");
                 }
-            });
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Помилка при купівлі: {ex.Message}");
+                }
+            }
+        }
 
-            LogOutCommand = new RelayCommand(obj =>
-            {
-                _mainViewModel.NavigateTo(new LogInViewModel(_mainViewModel));
-            });
+        private void LogOut()
+        {
+            MainViewModel.NavigateTo(new LogInViewModel(MainViewModel));
+        }
 
-            OpenProfileCommand = new RelayCommand(obj =>
-            {
-                _mainViewModel.NavigateTo(new ProfileViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
-            });
+        private void OpenProfile()
+        {
+            MainViewModel.NavigateTo(new ProfileViewModel(MainViewModel) { CurrentUser = this.CurrentUser });
+        }
 
-            OpenTicketsCommand = new RelayCommand(_ =>
-            {
-                _mainViewModel.NavigateTo(new TicketsViewModel(_mainViewModel) { CurrentUser = this.CurrentUser });
-            });
+        private void OpenTickets()
+        {
+            MainViewModel.NavigateTo(new TicketsViewModel(MainViewModel) { CurrentUser = this.CurrentUser });
         }
 
         private void LoadRoutes()
@@ -153,8 +156,5 @@ namespace Tickets.ViewModels
                 MessageBox.Show($"Помилка пошуку: {ex.Message}", "Помилка бази даних");
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

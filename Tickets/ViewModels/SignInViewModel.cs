@@ -7,10 +7,8 @@ using Tickets.Infrastructure;
 
 namespace Tickets.ViewModels
 {
-    public class SignInViewModel : INotifyPropertyChanged, IDataErrorInfo
+    public class SignInViewModel : BaseViewModel, IDataErrorInfo
     {
-        private readonly MainViewModel _mainViewModel;
-
         private string _name = string.Empty;
         private string _lastName = string.Empty;
         private string _email = string.Empty;
@@ -28,49 +26,48 @@ namespace Tickets.ViewModels
         public ICommand RegistrationCommand { get; }
         public ICommand OpenLogInCommand { get; }
 
-        public SignInViewModel(MainViewModel mainViewModel)
+        public SignInViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
-            _mainViewModel = mainViewModel;
+            RegistrationCommand = new RelayCommand( execute: obj => Registration(), canExecute: obj => IsFormValid());
 
-            RegistrationCommand = new RelayCommand(
-                execute: obj =>
-                {
-                    try
-                    {
-                        using var db = new AppDbContext();
+            OpenLogInCommand = new RelayCommand(p => OpenLogIn());
+        }
 
-                        if (db.Users.Any(u => u.Email == Email))
-                        {
-                            MessageBox.Show("Користувач з такою поштою вже існує!", "Помилка");
-                            return;
-                        }
-
-                        var newUser = new Models.User
-                        {
-                            Name = this.Name,
-                            LastName = this.LastName,
-                            Email = this.Email,
-                            Password = this.Password,
-                            Role = Models.UserRole.Customer
-                        };
-
-                        db.Users.Add(newUser);
-                        db.SaveChanges();
-
-                        _mainViewModel.NavigateTo(new RoutesViewModel(_mainViewModel) { CurrentUser = newUser } );
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Помилка при реєстрації: {ex.Message}", "Критична помилка");
-                    }
-                },
-                canExecute: obj => IsFormValid()
-            );
-
-            OpenLogInCommand = new RelayCommand(p =>
+        private void Registration()
+        {
+            try
             {
-                _mainViewModel.NavigateTo(new LogInViewModel(_mainViewModel));
-            });
+                using var db = new AppDbContext();
+
+                if (db.Users.Any(u => u.Email == Email))
+                {
+                    MessageBox.Show("Користувач з такою поштою вже існує!", "Помилка");
+                    return;
+                }
+
+                var newUser = new Models.User
+                {
+                    Name = this.Name,
+                    LastName = this.LastName,
+                    Email = this.Email,
+                    Password = this.Password,
+                    Role = Models.UserRole.Customer
+                };
+
+                db.Users.Add(newUser);
+                db.SaveChanges();
+
+                MainViewModel.NavigateTo(new RoutesViewModel(MainViewModel) { CurrentUser = newUser });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка при реєстрації: {ex.Message}", "Критична помилка");
+            }
+        }
+
+        private void OpenLogIn()
+        {
+            MainViewModel.NavigateTo(new LogInViewModel(MainViewModel));
         }
 
         private bool IsFormValid()
@@ -121,8 +118,5 @@ namespace Tickets.ViewModels
                 return error;
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
