@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Tickets.Infrastructure;
 
 namespace Tickets.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : PropertyHandler
     {
         private object? _currentView;
         public object? CurrentView { get => _currentView; set { _currentView = value; OnPropertyChanged(); } }
@@ -33,9 +34,5 @@ namespace Tickets.ViewModels
                 CurrentView = _previousView;
                 _previousView = null;
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
