@@ -58,7 +58,7 @@ namespace Tickets.ViewModels
             LoadRoutes();
         }
 
-        private void BuyTicket(object obj)
+        public void BuyTicket(object obj)
         {
             if (obj is Route selectedRoute && CurrentUser != null)
             {
