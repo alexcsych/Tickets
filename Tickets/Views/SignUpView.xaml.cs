@@ -12,9 +12,9 @@ using System.Windows.Shapes;
 
 namespace Tickets.Views
 {
-    public partial class SignInView : UserControl
+    public partial class SignUpView : UserControl
     {
-        public SignInView()
+        public SignUpView()
         {
             InitializeComponent();
         }

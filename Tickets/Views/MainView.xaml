@@ -22,8 +22,8 @@
                 <DataTemplate DataType="{x:Type vm:LogInViewModel}">
                     <views:LogInView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:SignInViewModel}">
-                    <views:SignInView />
+                <DataTemplate DataType="{x:Type vm:SignUpViewModel}">
+                    <views:SignUpView />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:RoutesViewModel}">
                     <views:RoutesView />

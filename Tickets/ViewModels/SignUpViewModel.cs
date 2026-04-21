@@ -7,7 +7,7 @@ using Tickets.Infrastructure;
 
 namespace Tickets.ViewModels
 {
-    public class SignInViewModel : BaseViewModel, IDataErrorInfo
+    public class SignUpViewModel : BaseViewModel, IDataErrorInfo
     {
         private string _name = string.Empty;
         private string _lastName = string.Empty;
@@ -26,7 +26,7 @@ namespace Tickets.ViewModels
         public ICommand RegistrationCommand { get; }
         public ICommand OpenLogInCommand { get; }
 
-        public SignInViewModel(MainViewModel mainViewModel) : base(mainViewModel)
+        public SignUpViewModel(MainViewModel mainViewModel) : base(mainViewModel)
         {
             RegistrationCommand = new RelayCommand( execute: obj => Registration(), canExecute: obj => IsFormValid());
 

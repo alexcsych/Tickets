@@ -69,7 +69,7 @@ namespace Tickets.ViewModels
 
         private void OpenSignIn()
         {
-            MainViewModel.NavigateTo(new SignInViewModel(MainViewModel));
+            MainViewModel.NavigateTo(new SignUpViewModel(MainViewModel));
         }
 
         private bool IsFormValid()

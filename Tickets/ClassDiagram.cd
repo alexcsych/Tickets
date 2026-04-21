@@ -104,11 +104,11 @@
       <FileName>ViewModels\RoutesViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Tickets.ViewModels.SignInViewModel">
+  <Class Name="Tickets.ViewModels.SignUpViewModel">
     <Position X="13.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACSAoAAEACAAAQQACAGAAAQAAAAAAAQCAACAAAIEIEk=</HashCode>
-      <FileName>ViewModels\SignInViewModel.cs</FileName>
+      <FileName>ViewModels\SignUpViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -159,11 +159,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="Tickets.Views.SignInView" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="Tickets.Views.SignUpView" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="4.25" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Views\SignInView.xaml.cs</FileName>
+      <FileName>Views\SignUpView.xaml.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>

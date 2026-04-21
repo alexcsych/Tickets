@@ -21,7 +21,7 @@ namespace Tickets.ViewModels
 
         public void NavigateTo(object nextView)
         {
-            if (CurrentView is not null and not LogInViewModel and not SignInViewModel)
+            if (CurrentView is not null and not LogInViewModel and not SignUpViewModel)
             {
                 _previousView = CurrentView;
             }
